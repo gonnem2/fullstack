@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Annotated
 from fastapi import APIRouter, Depends, Body, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,7 +18,7 @@ expense_service = ExpenseService()
     "",
     summary="Create a new spending",
     status_code=status.HTTP_201_CREATED,
-    response_model=ExpenseOut,
+    # response_model=ExpenseOut,
 )
 async def create_spending(
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -33,18 +34,22 @@ async def create_spending(
 # --- READ (list) ---
 @router.get(
     "",
-    summary="Get all spendings (with pagination)",
+    summary="Получить расходы зв период",
     response_model=ExpenseGet,
 )
 async def get_all_user_spendings(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_user)],
+    from_date: datetime = Query(
+        default_factory=lambda: datetime.now() - timedelta(days=1)
+    ),
+    to_date: datetime = Query(default_factory=datetime.now),
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
 ):
     """Получить все траты с пагинацией."""
     expenses: list[Expense] = await expense_service.get_expenses(
-        db, current_user.id, skip, limit
+        db, current_user.id, skip, limit, from_date, to_date
     )
     return {
         "expenses": expenses,

@@ -1,6 +1,7 @@
-from typing import List
+from datetime import datetime
+from typing import List, Dict
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Expense
@@ -23,19 +24,26 @@ async def create_expense(
     db.add(new_expense)
     await db.flush()
     await db.refresh(new_expense)
-
-    return Expense
+    return new_expense
 
 
 async def get_user_expenses(
-    db: AsyncSession, user_id: int, skip: int, limit: int
+    db: AsyncSession,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 10,
+    from_date: datetime | None = None,
+    to_date: datetime | None = None,
 ) -> List[Expense]:
-    """Возаращет все траты пользователя с пагинацией"""
+    """Возвращает траты пользователя с пагинацией и общую сумму"""
 
-    stmt = select(Expense).where(Expense.user_id == user_id).offset(skip).limit(limit)
+    stmt = select(Expense).where(Expense.user_id == user_id)
+    if from_date and to_date:
+        stmt = stmt.where(Expense.expense_date.between(from_date, to_date))
+
+    stmt = stmt.offset(skip).limit(limit)
     result = await db.scalars(stmt)
     expenses = list(result.all())
-
     return expenses
 
 

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Expense, Category
@@ -49,7 +51,15 @@ class ExpenseService:
             comment=new_expense.comment,
         )
 
-    async def get_expenses(self, db: AsyncSession, user_id: int, skip: int, limit: int):
+    async def get_expenses(
+        self,
+        db: AsyncSession,
+        user_id: int,
+        skip: int,
+        limit: int,
+        from_date: datetime,
+        to_date: datetime,
+    ) -> list[Expense]:
         """Возвращает все траты юзера с пагинацией"""
 
         expenses: list[ExpenseDTO] = [
@@ -62,7 +72,7 @@ class ExpenseService:
                 comment=new_expense.comment,
             )
             for new_expense in await expense_crud.get_user_expenses(
-                db, user_id, skip, limit
+                db, user_id, skip, limit, from_date, to_date
             )
         ]
         return expenses
