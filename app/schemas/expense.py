@@ -10,7 +10,7 @@ class ExpenseCreate(BaseModel):
     comment: str
 
 class ExpenseUpdate(BaseModel):
-    created_at: datetime
+    expense_date: datetime
     category_id: int
     cost: float
     comment: str
@@ -25,3 +25,9 @@ class ExpenseOut(BaseModel):
     comment: str
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ExpenseGet(BaseModel):
+    expenses: list[ExpenseOut]
+    skip: int
+    limit: int

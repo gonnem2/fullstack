@@ -1,10 +1,10 @@
-class ExpenseException(Exception):
+class CategoryException(Exception):
     """Базовый класс исключений"""
 
 
-class CategoryNotFoundException(ExpenseException):
+class CategoryNotFoundException(CategoryException):
     """Не найдена категория"""
 
 
-class CategoryTypeException(ExpenseException):
-    """Неправильный тип категории(!= трата)"""
+class CategoryTypeException(CategoryException):
+    """Неправильный тип категории"""

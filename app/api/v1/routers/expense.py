@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import User, Expense
 from app.db.database import get_db
-from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseOut
+from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseOut, ExpenseGet
 from app.core.pagination import paginate
 from app.service.auth.dependencies import get_current_user
 from app.service.expense.service import ExpenseService
@@ -34,7 +34,7 @@ async def create_spending(
 @router.get(
     "",
     summary="Get all spendings (with pagination)",
-    response_model=list[ExpenseOut],
+    response_model=ExpenseGet,
 )
 async def get_all_user_spendings(
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -46,7 +46,11 @@ async def get_all_user_spendings(
     expenses: list[Expense] = await expense_service.get_expenses(
         db, current_user.id, skip, limit
     )
-    return expenses
+    return {
+        "expenses": expenses,
+        "skip": skip,
+        "limit": limit,
+    }
 
 
 # --- READ (one) ---
@@ -57,11 +61,12 @@ async def get_all_user_spendings(
 )
 async def get_spending_by_id(
     spending_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     """Получить одну трату по ID."""
-    # TODO: добавить выборку по ID
-    return {"message": f"Spending {spending_id}"}
+    expense = await expense_service.get_expense_by_id(db, spending_id, current_user.id)
+    return expense
 
 
 # --- UPDATE ---
@@ -71,25 +76,36 @@ async def get_spending_by_id(
     response_model=ExpenseOut,
 )
 async def update_spending(
-    spending_id: int,
+    expense_id: int,
     db: Annotated[AsyncSession, Depends(get_db)],
     spending_update: Annotated[ExpenseUpdate, Body(...)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """Обновить трату по ID."""
-    # TODO: добавить обновление
-    return {"message": f"Spending {spending_id} updated"}
+    updated_expense = await expense_service.update_expense(
+        db,
+        expense_id,
+        spending_update,
+        current_user.id,
+    )
+    return updated_expense
 
 
 # --- DELETE ---
 @router.delete(
     "/{spending_id}",
     summary="Delete spending by ID",
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
+    response_model=ExpenseOut,
 )
 async def delete_spending(
-    spending_id: int,
+    expense_id: int,
     db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """Удалить трату по ID."""
-    # TODO: добавить удаление
-    return None
+    deleted_expense = await expense_service.delete_expense(
+        db, expense_id, current_user.id
+    )
+
+    return deleted_expense
