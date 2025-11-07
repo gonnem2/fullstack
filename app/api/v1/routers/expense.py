@@ -48,13 +48,16 @@ async def get_all_user_spendings(
     limit: int = Query(10, le=100),
 ):
     """Получить все траты с пагинацией."""
-    expenses: list[Expense] = await expense_service.get_expenses(
+    expenses, total = await expense_service.get_expenses(
         db, current_user.id, skip, limit, from_date, to_date
     )
     return {
-        "expenses": expenses,
-        "skip": skip,
-        "limit": limit,
+        "data": {
+            "expenses": expenses,
+            "skip": skip,
+            "limit": limit,
+        },
+        "total": total,
     }
 
 

@@ -47,6 +47,25 @@ async def get_user_expenses(
     return expenses
 
 
+async def get_total_expenses(
+    db: AsyncSession,
+    user_id: int,
+    from_date: datetime | None = None,
+    to_date: datetime | None = None,
+):
+    query = select(func.sum(Expense.value)).where(Expense.user_id == user_id)
+
+    if from_date:
+        query = query.where(Expense.expense_date >= from_date)
+    if to_date:
+        query = query.where(Expense.expense_date <= to_date)
+
+    result = await db.execute(query)
+    total = result.scalar() or 0
+
+    return total
+
+
 async def get_expense_by_id(db: AsyncSession, spending_id: int) -> Expense:
     """возвращает трату по id"""
 

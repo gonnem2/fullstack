@@ -27,7 +27,13 @@ class ExpenseOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class ExpenseGet(BaseModel):
+
+
+class Expenses(BaseModel):
     expenses: list[ExpenseOut]
     skip: int
     limit: int
+
+class ExpenseGet(BaseModel):
+    data: Expenses
+    total: float

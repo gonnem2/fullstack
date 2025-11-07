@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Tuple
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -59,7 +60,7 @@ class ExpenseService:
         limit: int,
         from_date: datetime,
         to_date: datetime,
-    ) -> list[Expense]:
+    ) -> Tuple[list[ExpenseDTO], float]:
         """Возвращает все траты юзера с пагинацией"""
 
         expenses: list[ExpenseDTO] = [
@@ -75,7 +76,11 @@ class ExpenseService:
                 db, user_id, skip, limit, from_date, to_date
             )
         ]
-        return expenses
+
+        total_expenses = await expense_crud.get_total_expenses(
+            db, user_id, from_date, to_date
+        )
+        return expenses, total_expenses
 
     async def get_expense_by_id(
         self, db: AsyncSession, spending_id: int, user_id: int
