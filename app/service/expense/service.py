@@ -31,3 +31,9 @@ class ExpenseService:
 
         new_expense = await expense_crud.create_expense(db, spending, user_id)
         return new_expense
+
+    async def get_expenses(self, db: AsyncSession, user_id: int, skip: int, limit: int):
+        """Возвращает все траты юзера с пагинацией"""
+
+        expenses = await expense_crud.get_user_expenses(db, user_id, skip, limit)
+        return expenses

@@ -1,3 +1,6 @@
+from typing import List
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Expense
@@ -20,3 +23,14 @@ async def create_expense(
     await db.flush()
     await db.refresh(new_expense)
     return new_expense
+
+
+async def get_user_expenses(
+    db: AsyncSession, user_id: int, skip: int, limit: int
+) -> List[Expense]:
+    """Возаращет все траты пользователя с пагинацией"""
+
+    stmt = select(Expense).where(Expense.user_id == user_id).offset(skip).limit(limit)
+    result = await db.scalars(stmt)
+    expenses = list(result.all())
+    return expenses

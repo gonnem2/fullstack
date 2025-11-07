@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Body, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import User
+from app.db import User, Expense
 from app.db.database import get_db
 from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseOut
 from app.core.pagination import paginate
@@ -36,14 +36,17 @@ async def create_spending(
     summary="Get all spendings (with pagination)",
     response_model=list[ExpenseOut],
 )
-async def get_all_spendings(
+async def get_all_user_spendings(
     db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
 ):
     """Получить все траты с пагинацией."""
-    # TODO: добавить выборку из базы
-    return []
+    expenses: list[Expense] = await expense_service.get_expenses(
+        db, current_user.id, skip, limit
+    )
+    return expenses
 
 
 # --- READ (one) ---
