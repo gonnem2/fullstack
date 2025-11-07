@@ -4,35 +4,37 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import User
 from app.db.database import get_db
-from app.schemas.expense import SpendingCreate, SpendingUpdate, SpendingOut
+from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseOut
 from app.core.pagination import paginate
 from app.service.auth.dependencies import get_current_user
+from app.service.expense.service import ExpenseService
 
 router = APIRouter(prefix="/spending", tags=["Spending"])
+expense_service = ExpenseService()
 
 
-# --- CREATE ---
 @router.post(
     "",
     summary="Create a new spending",
     status_code=status.HTTP_201_CREATED,
-    response_model=SpendingOut,
+    response_model=ExpenseOut,
 )
 async def create_spending(
     db: Annotated[AsyncSession, Depends(get_db)],
-    spending: Annotated[SpendingCreate, Body(...)],
+    spending: Annotated[ExpenseCreate, Body(...)],
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     """Создать новую трату."""
-    # TODO: добавить реализацию
-    return {"message": "Spending created"}
+    new_expense = await expense_service.create_expense(db, spending, current_user.id)
+
+    return new_expense
 
 
 # --- READ (list) ---
 @router.get(
     "",
     summary="Get all spendings (with pagination)",
-    response_model=list[SpendingOut],
+    response_model=list[ExpenseOut],
 )
 async def get_all_spendings(
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -48,7 +50,7 @@ async def get_all_spendings(
 @router.get(
     "/{spending_id}",
     summary="Get spending by ID",
-    response_model=SpendingOut,
+    response_model=ExpenseOut,
 )
 async def get_spending_by_id(
     spending_id: int,
@@ -63,12 +65,12 @@ async def get_spending_by_id(
 @router.put(
     "/{spending_id}",
     summary="Update spending by ID",
-    response_model=SpendingOut,
+    response_model=ExpenseOut,
 )
 async def update_spending(
     spending_id: int,
     db: Annotated[AsyncSession, Depends(get_db)],
-    spending_update: Annotated[SpendingUpdate, Body(...)],
+    spending_update: Annotated[ExpenseUpdate, Body(...)],
 ):
     """Обновить трату по ID."""
     # TODO: добавить обновление
