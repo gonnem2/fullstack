@@ -1,14 +1,18 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class UserCreate(BaseModel):
-    pass
-
-
-class UserLogin(BaseModel):
-    pass
+    username: str
+    email: EmailStr
+    password: str
 
 
 
 class UserOut(BaseModel):
-    pass
+    """user из БД"""
+    id: int
+    username: str
+    email: EmailStr
+    hashed_password: str
+
+    model_config = ConfigDict(from_attributes=True)

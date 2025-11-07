@@ -2,9 +2,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Body, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.db import User
 from app.db.database import get_db
 from app.schemas.expense import SpendingCreate, SpendingUpdate, SpendingOut
 from app.core.pagination import paginate
+from app.service.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/spending", tags=["Spending"])
 
@@ -19,6 +21,7 @@ router = APIRouter(prefix="/spending", tags=["Spending"])
 async def create_spending(
     db: Annotated[AsyncSession, Depends(get_db)],
     spending: Annotated[SpendingCreate, Body(...)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """Создать новую трату."""
     # TODO: добавить реализацию

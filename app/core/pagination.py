@@ -3,8 +3,6 @@ from typing import Type, Any, Sequence
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
-from pydantic import BaseModel
-
 
 async def paginate(
     db: AsyncSession,
