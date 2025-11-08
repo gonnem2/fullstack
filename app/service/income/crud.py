@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Iterable
 
-from sqlalchemy import insert, select, between, update
+from sqlalchemy import insert, select, between, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Income
@@ -128,3 +128,10 @@ async def update_income(
         value=row.value,
         comment=row.comment,
     )
+
+
+async def delete_income(db: AsyncSession, income_id: int) -> None:
+    """Удаляет доход из БД"""
+
+    stmt = delete(Income).where(Income.id == income_id)
+    await db.execute(stmt)

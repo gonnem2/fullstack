@@ -23,3 +23,6 @@ class User(Base):
     expenses: Mapped[List["Expense"]] = relationship(
         "Expense", back_populates="user", uselist=True, cascade="all, delete-orphan"
     )
+    categories: Mapped[List["Category"]] = relationship(
+        "Category", back_populates="user", uselist=True, cascade="all, delete-orphan"
+    )

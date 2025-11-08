@@ -95,12 +95,13 @@ async def update_income(
 
 @router.delete(
     "/{income_id}",
-    summary="Delete income by ID",
+    summary="Удаляет доход пользователя",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_income(
     income_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     """Удалить запись дохода."""
-    return None
+    await income_service.delete_income(db, income_id, current_user)

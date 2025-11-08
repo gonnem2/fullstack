@@ -97,3 +97,17 @@ class IncomeService:
             db, income_id, income_update
         )
         return updated_income
+
+    async def delete_income(
+        self, db: AsyncSession, income_id: int, current_user: User
+    ) -> None:
+        """Удаляет запись о доходе из БД"""
+
+        income = await income_crud.get_income_by_id(db, income_id)
+        if not income:
+            raise IncomeNotFoundException("Доход не найден")
+
+        if income.user_id != current_user.id:
+            raise IncomeUserPermissionException("Доход не принадлежит пользователю")
+
+        await income_crud.delete_income(db, income_id)

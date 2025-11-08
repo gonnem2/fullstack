@@ -8,3 +8,7 @@ class CategoryNotFoundException(CategoryException):
 
 class CategoryTypeException(CategoryException):
     """Неправильный тип категории"""
+
+
+class CategoryPermissionException(CategoryException):
+    """Нет прав на категорию"""

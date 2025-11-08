@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 
-from sqlalchemy import String, Enum as sqlalchemy_enum
+from sqlalchemy import String, Enum as sqlalchemy_enum, ForeignKey
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 
@@ -22,12 +22,16 @@ class Category(Base):
         sqlalchemy_enum(TypesOfCat), nullable=False, index=True
     )
 
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+
     incomes: Mapped[List["Income"]] = relationship(
         "Income", back_populates="category", uselist=True, cascade="all, delete-orphan"
     )
     expenses: Mapped[List["Expense"]] = relationship(
         "Expense", back_populates="category", uselist=True, cascade="all, delete-orphan"
     )
+
+    user: Mapped["User"] = relationship("User", back_populates="categories")
 
     @property
     def is_income(self):
