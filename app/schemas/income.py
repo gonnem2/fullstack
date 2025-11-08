@@ -1,8 +1,13 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
 class IncomeCreate(BaseModel):
-    pass
+    income_date: datetime
+    category_id: int
+    value: float
+    comment: str
 
 
 class IncomeUpdate(BaseModel):
@@ -10,4 +15,9 @@ class IncomeUpdate(BaseModel):
 
 
 class IncomeOut(BaseModel):
-    pass
+    id: int
+    user_id: int
+    income_date: datetime
+    category_id: int
+    value: float
+    comment: str

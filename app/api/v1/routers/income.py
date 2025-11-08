@@ -2,10 +2,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Body, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.db import User
 from app.db.database import get_db
 from app.schemas.income import IncomeCreate, IncomeUpdate, IncomeOut
+from app.service.auth.dependencies import get_current_user
+from app.service.income.service import IncomeService
 
 router = APIRouter(prefix="/income", tags=["Income"])
+income_service = IncomeService()
 
 
 @router.post(
@@ -17,9 +21,12 @@ router = APIRouter(prefix="/income", tags=["Income"])
 async def create_income(
     db: Annotated[AsyncSession, Depends(get_db)],
     income: Annotated[IncomeCreate, Body(...)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """Создать новую запись дохода."""
-    return {"message": "Income created"}
+    new_income = await income_service.create_income(db, current_user, income)
+
+    return new_income
 
 
 @router.get(
