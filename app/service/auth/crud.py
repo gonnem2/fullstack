@@ -1,15 +1,18 @@
-from sqlalchemy import select
+from sqlalchemy import select, or_, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import encode_password
 from app.db import User
+from app.schemas.dataclasses.user import UserDTO
 from app.schemas.user import UserCreate
 
 
-async def get_user_by_email(db: AsyncSession, email: str) -> User:
-    """Возвращает пользователя по его email"""
+async def get_user_by_email_or_username(
+    db: AsyncSession, email: str, username: str
+) -> User:
+    """Возвращает пользователя по его email или username"""
 
-    stmt = select(User).where(User.email == email)
+    stmt = select(User).where(or_(User.email == email, User.username == username))
     result = await db.scalars(stmt)
     return result.first()
 
@@ -21,6 +24,7 @@ async def create_user(db: AsyncSession, user: UserCreate) -> User:
         username=user.username,
         email=user.email,
         hashed_password=encode_password(user.password),
+        day_expense_limit=user.day_expense_limit,
     )
     db.add(new_user)
     await db.flush()

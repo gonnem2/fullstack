@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.settings import settings
 from app.core.security import validate_password
 from app.db import User
+from app.schemas.dataclasses.user import UserDTO
 from app.schemas.user import UserCreate
 from app.service.auth import crud as auth_crud
 from app.service.auth.exceptions import (
@@ -47,7 +48,9 @@ class AuthService:
     async def create_user(self, db: AsyncSession, user: UserCreate) -> User:
         """Регистарция пользователя: создание в БД"""
 
-        user_exists = await auth_crud.get_user_by_email(db, str(user.email))
+        user_exists = await auth_crud.get_user_by_email_or_username(
+            db, str(user.email), user.username
+        )
         if user_exists:
             raise UserAlreadyExists("Такой пользователь уже создан")
 
