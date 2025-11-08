@@ -1,4 +1,5 @@
 from datetime import datetime
+from multiprocessing.managers import ListProxy
 
 from pydantic import BaseModel
 
@@ -11,13 +12,25 @@ class IncomeCreate(BaseModel):
 
 
 class IncomeUpdate(BaseModel):
-    pass
+    income_date: datetime
+    category_id: int
+    value: float
+    comment: str
 
 
-class IncomeOut(BaseModel):
+class Income(BaseModel):
     id: int
     user_id: int
     income_date: datetime
     category_id: int
     value: float
     comment: str
+
+class IncomeGetPag(BaseModel):
+    incomes: list[Income]
+    skip: int
+    limit: int
+
+class IncomeOut(BaseModel):
+    data: IncomeGetPag
+    total: float

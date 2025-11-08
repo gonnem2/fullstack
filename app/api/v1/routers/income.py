@@ -1,10 +1,11 @@
+from datetime import datetime, timedelta
 from typing import Annotated
 from fastapi import APIRouter, Depends, Body, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import User
 from app.db.database import get_db
-from app.schemas.income import IncomeCreate, IncomeUpdate, IncomeOut
+from app.schemas.income import IncomeCreate, IncomeUpdate, IncomeOut, Income
 from app.service.auth.dependencies import get_current_user
 from app.service.income.service import IncomeService
 
@@ -31,43 +32,65 @@ async def create_income(
 
 @router.get(
     "",
-    summary="Get all incomes (with pagination)",
-    response_model=list[IncomeOut],
+    summary="Получаем доходы за период",
+    response_model=IncomeOut,
 )
-async def get_all_incomes(
+async def get_incomes_by_period(
     db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+    from_date: datetime = Query(
+        default_factory=lambda: datetime.now() - timedelta(days=1)
+    ),
+    to_date: datetime = Query(default_factory=datetime.now),
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
 ):
-    """Получить все доходы."""
-    return []
+    """Получить все доходы за период с пагинацией."""
+    incomes, total = await income_service.get_incomes_by_period(
+        db, from_date, to_date, skip, limit, current_user
+    )
+    return {
+        "data": {
+            "incomes": incomes,
+            "skip": skip,
+            "limit": limit,
+        },
+        "total": total,
+    }
 
 
 @router.get(
     "/{income_id}",
-    summary="Get income by ID",
-    response_model=IncomeOut,
+    summary="Получаем доход по его id",
+    response_model=Income,
 )
 async def get_income_by_id(
     income_id: int,
     db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """Получить запись дохода по ID."""
-    return {"message": f"Income {income_id}"}
+
+    income = await income_service.get_income_by_id(db, income_id, current_user)
+    return income
 
 
 @router.put(
     "/{income_id}",
     summary="Update income by ID",
-    response_model=IncomeOut,
+    response_model=Income,
 )
 async def update_income(
     income_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
     income_update: Annotated[IncomeUpdate, Body(...)],
 ):
     """Обновить запись дохода."""
-    return {"message": f"Income {income_id} updated"}
+    updated_income = await income_service.update_income(
+        db, income_id, income_update, current_user
+    )
+    return updated_income
 
 
 @router.delete(

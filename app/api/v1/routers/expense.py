@@ -51,6 +51,7 @@ async def get_all_user_spendings(
     expenses, total = await expense_service.get_expenses(
         db, current_user.id, skip, limit, from_date, to_date
     )
+
     return {
         "data": {
             "expenses": expenses,
