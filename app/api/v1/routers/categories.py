@@ -6,7 +6,12 @@ from starlette import status
 
 from app.db import User
 from app.db.database import get_db
-from app.schemas.category import CreateCategory, CategoryResponse, CategoriesResponse
+from app.schemas.category import (
+    CreateCategory,
+    CategoryResponse,
+    CategoriesResponse,
+    CategoryUpdate,
+)
 from app.schemas.dataclasses.category import CategoryDTO
 from app.service.auth.dependencies import get_current_user
 from app.service.category.service import CategoryService
@@ -71,3 +76,34 @@ async def get_category_by_id(
         db, category_id, current_user
     )
     return category
+
+
+@router.put(
+    "/{category_id}",
+    response_model=CategoryResponse,
+    summary="Обновляет категорию по id",
+)
+async def update_category(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    category_id: int,
+    category: CategoryUpdate,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    updated_category = await category_service.update_category(
+        db, category_id, category, current_user
+    )
+    return updated_category
+
+
+@router.delete(
+    "/{category_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Удаляет категорию по id",
+)
+async def delete_category(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    category_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    """Удаляет категорию пользователя по id"""
+    await category_service.delete_category(db, category_id, current_user)

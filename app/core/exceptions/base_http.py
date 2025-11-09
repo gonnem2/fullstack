@@ -6,7 +6,7 @@ class Base(HTTPException):
     detail: str
     headers: dict[str, str] | None = None
 
-    def __init__(self, *args, **kwargs) -> None:  # noqa: ARG002
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(
             status_code=self.status_code,
             detail=self.detail,

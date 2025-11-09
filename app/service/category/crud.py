@@ -1,11 +1,11 @@
 from typing import List
 
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.engine import row
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Category
-from app.schemas.category import CreateCategory
+from app.schemas.category import CreateCategory, CategoryUpdate
 from app.schemas.dataclasses.category import CategoryDTO
 
 
@@ -71,3 +71,41 @@ async def get_categories(
         )
         for category in rows
     ]
+
+
+async def update_category(
+    db: AsyncSession, category_id: int, category: CategoryUpdate
+) -> CategoryDTO | None:
+    """Обновляет категорию и возвращает ее из БД"""
+
+    stmt = (
+        update(Category)
+        .where(Category.id == category_id)
+        .values(**category.model_dump())
+        .returning(
+            Category.id,
+            Category.user_id,
+            Category.title,
+            Category.type_of_category,
+        )
+    )
+
+    res = await db.execute(stmt)
+    row = res.first()
+
+    if not row:
+        return None
+
+    return CategoryDTO(
+        id=row.id,
+        title=row.title,
+        type_of_category=row.type_of_category,
+        user_id=row.user_id,
+    )
+
+
+async def delete_category(db: AsyncSession, category_id: int) -> None:
+    """Удаляет категорию из БД"""
+
+    stmt = delete(Category).where(Category.id == category_id)
+    await db.execute(stmt)

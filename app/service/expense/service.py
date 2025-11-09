@@ -4,7 +4,9 @@ from typing import Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Expense, Category
+from app.db.models.category import TypesOfCat
 from app.schemas import expense
+from app.schemas.dataclasses.category import CategoryDTO
 from app.schemas.dataclasses.expense import ExpenseDTO
 from app.schemas.expense import ExpenseCreate, ExpenseOut, ExpenseUpdate
 from app.service.category.crud import get_category_by_id
@@ -23,7 +25,7 @@ class ExpenseService:
     """Сервис трат: создание, удаление, изменение, получение"""
 
     @staticmethod
-    async def _validate_category(db: AsyncSession, category_id: int) -> Category:
+    async def _validate_category(db: AsyncSession, category_id: int) -> CategoryDTO:
         category_exists = await get_category_by_id(db, category_id)
         if not category_exists:
             raise CategoryNotFoundException("Категория не найдена")
@@ -39,7 +41,7 @@ class ExpenseService:
 
         category = await self._validate_category(db, spending.category_id)
 
-        if not category.is_expense:
+        if not category.type_of_category == TypesOfCat.EXPENSE:
             raise CategoryTypeException("Тип категории не трата")
 
         new_expense = await expense_crud.create_expense(db, spending, user_id)

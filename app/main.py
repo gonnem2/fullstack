@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import router as api_router
+from app.exceptions import ExceptionHandler
 
 app = FastAPI(
     title="FinanceTrack",
@@ -10,9 +11,6 @@ app = FastAPI(
 
 origins = [
     "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:4173",
-    "http://localhost:3000",
 ]
 
 app.add_middleware(
@@ -24,3 +22,5 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+handler = ExceptionHandler()
+handler.register(app)
