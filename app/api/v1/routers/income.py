@@ -17,7 +17,7 @@ income_service = IncomeService()
     "",
     summary="Create a new income",
     status_code=status.HTTP_201_CREATED,
-    response_model=IncomeOut,
+    response_model=Income,
 )
 async def create_income(
     db: Annotated[AsyncSession, Depends(get_db)],

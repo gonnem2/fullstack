@@ -4,6 +4,7 @@ from typing import Tuple, List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import User
+from app.db.models.category import TypesOfCat
 from app.schemas.dataclasses.income import IncomeDTO
 from app.schemas.income import IncomeCreate, IncomeUpdate
 from app.service.category import crud as category_crud
@@ -32,7 +33,7 @@ class IncomeService:
         if not category_exists:
             raise CategoryNotFoundException("Категория не найдена") from None
 
-        if not category_exists.is_income:
+        if not category_exists.type_of_category == TypesOfCat.INCOME:
             raise CategoryTypeException("Тип категории не трата!") from None
 
         new_income: IncomeDTO = await income_crud.create_category(

@@ -1,7 +1,7 @@
 from datetime import datetime
 from multiprocessing.managers import ListProxy
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class IncomeCreate(BaseModel):
@@ -14,7 +14,8 @@ class IncomeCreate(BaseModel):
 class IncomeUpdate(BaseModel):
     income_date: datetime
     category_id: int
-    value: float
+    value: float = Field(..., ge=0, lt=1000000000)
+    comment: str
     comment: str
 
 
@@ -23,8 +24,9 @@ class Income(BaseModel):
     user_id: int
     income_date: datetime
     category_id: int
-    value: float
+    value: float = Field(..., ge=0, lt=1000000000)
     comment: str
+
 
 class IncomeGetPag(BaseModel):
     incomes: list[Income]

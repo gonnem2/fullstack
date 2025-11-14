@@ -17,7 +17,7 @@ class Expense(Base):
     category_id: Mapped[int] = mapped_column(
         ForeignKey("categories.id"), nullable=False
     )
-    value: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    value: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
     comment: Mapped[str] = mapped_column(String(100), nullable=True)
 
     category: Mapped["Category"] = relationship("Category", back_populates="expenses")

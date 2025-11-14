@@ -105,3 +105,4 @@ class AuthService:
             raise TokenExpiredException("Refresh token истек")
         except jwt.InvalidTokenError:
             raise AuthException("Неверный refresh token")
+
