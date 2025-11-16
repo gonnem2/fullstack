@@ -1,5 +1,6 @@
 from datetime import datetime
 from multiprocessing.managers import ListProxy
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -25,7 +26,7 @@ class Income(BaseModel):
     income_date: datetime
     category_id: int
     value: float = Field(..., ge=0, lt=1000000000)
-    comment: str
+    comment: Optional[str]
 
 
 class IncomeGetPag(BaseModel):

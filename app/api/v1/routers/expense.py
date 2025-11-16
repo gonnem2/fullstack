@@ -85,7 +85,7 @@ async def get_spending_by_id(
     response_model=ExpenseOut,
 )
 async def update_spending(
-    expense_id: int,
+    spending_id: int,
     db: Annotated[AsyncSession, Depends(get_db)],
     spending_update: Annotated[ExpenseUpdate, Body(...)],
     current_user: Annotated[User, Depends(get_current_user)],
@@ -93,7 +93,7 @@ async def update_spending(
     """Обновить трату по ID."""
     updated_expense = await expense_service.update_expense(
         db,
-        expense_id,
+        spending_id,
         spending_update,
         current_user.id,
     )
@@ -108,13 +108,13 @@ async def update_spending(
     response_model=ExpenseOut,
 )
 async def delete_spending(
-    expense_id: int,
+    spending_id: int,
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     """Удалить трату по ID."""
     deleted_expense = await expense_service.delete_expense(
-        db, expense_id, current_user.id
+        db, spending_id, current_user.id
     )
 
     return deleted_expense

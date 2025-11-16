@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ExpenseCreate(BaseModel):
@@ -22,7 +23,7 @@ class ExpenseOut(BaseModel):
     expense_date: datetime
     category_id: int
     value: float
-    comment: str
+    comment: Optional[str]
 
     model_config = ConfigDict(from_attributes=True)
 
