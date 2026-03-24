@@ -31,3 +31,10 @@ class UserNotFoundHTTPException(Base):
 
     status_code = status.HTTP_404_NOT_FOUND
     detail = "User not found"
+
+
+class NotAdminUserHTTPException(Base):
+    """Пользователь не админ"""
+
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = "Only admins can access this page"

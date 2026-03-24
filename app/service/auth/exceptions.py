@@ -15,3 +15,7 @@ class CredentialsException(AuthException):
 
 class TokenExpiredException(AuthException):
     """Время действия токена истекло"""
+
+
+class NotAdminUserException(AuthException):
+    """Пользователь не админ"""

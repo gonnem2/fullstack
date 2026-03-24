@@ -15,6 +15,7 @@ async def get_category_by_id(db: AsyncSession, category_id: int) -> CategoryDTO 
     stmt = select(Category).where(Category.id == category_id)
     result = await db.scalars(stmt)
     row: Category = result.first()
+
     if not row:
         return None
 

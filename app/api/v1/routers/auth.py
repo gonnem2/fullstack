@@ -1,11 +1,13 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, Body, status
+from fastapi import APIRouter, Depends, Body, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.database import get_db
 from app.schemas.token import TokenOut
 from app.schemas.user import UserCreate, UserOut
+from app.service.auth.dependencies import get_current_user
+from app.service.auth.exceptions import AuthException
 from app.service.auth.service import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -56,8 +58,27 @@ async def refresh_token(
 ):
     """Обновить access токен по refresh токену."""
     access_token, refresh_token = await auth_service.refresh_token(db, refresh_token)
+
+    # сохраняем данные о токене в memcached
+
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
     }
+
+
+@router.post("/logout", summary="Выход из системы (удаляет сессию)")
+async def logout_user(
+    refresh_token: Annotated[str, Body(..., embed=True)],
+    current_user: Annotated[UserOut, Depends(get_current_user)],
+):
+    """
+    Принимает refresh токен и удаляет соответствующую сессию из Memcached.
+    После этого данный refresh токен становится недействительным.
+    """
+    try:
+        await auth_service.logout(refresh_token, current_user.id)
+        return {"message": "Successfully logged out"}
+    except AuthException as e:
+        raise HTTPException(status_code=400, detail=str(e))

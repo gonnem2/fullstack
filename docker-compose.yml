@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:17
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports: ["5433:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+    volumes:
+        - ./postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    command: ["sh", "-c", "alembic upgrade head && python3 -m app.main"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports: ["8000:8000"]
+    volumes:
+      - ./app:/src/app
+      - ./app/migrations:/src/app/migrations
+
+
+  memcached:
+    image: memcached
+    restart: unless-stopped
+    command: ["memcached", "-vv"]

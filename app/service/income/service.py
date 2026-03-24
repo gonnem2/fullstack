@@ -22,7 +22,6 @@ from app.service.income.exceptions import (
 
 class IncomeService:
     """Сревис доходов: создание, удаление, изменение, ..."""
-
     async def create_income(
         self, db: AsyncSession, current_user: User, income: IncomeCreate
     ):

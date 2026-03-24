@@ -7,7 +7,7 @@ from app.core.exceptions.auth import (
     UserAlreadyExistsHTTPException,
     UserNotFoundHTTPException,
     TokenExpiredHTTPException,
-    InvalidCredentialsHTTPException,
+    InvalidCredentialsHTTPException, NotAdminUserHTTPException,
 )
 from app.core.exceptions.category import (
     CategoryNotFoundHTTPException,
@@ -29,6 +29,7 @@ from app.service.auth.exceptions import (
     UserNotFound,
     CredentialsException,
     TokenExpiredException,
+    NotAdminUserException,
 )
 
 from app.service.category.exception import (
@@ -54,6 +55,7 @@ AUTH_TO_HTTP: dict[type[AuthException], type[HTTPException]] = {
     UserNotFound: UserNotFoundHTTPException,
     CredentialsException: InvalidCredentialsHTTPException,
     TokenExpiredException: TokenExpiredHTTPException,
+    NotAdminUserException: NotAdminUserHTTPException,
 }
 
 CATEGORY_TO_HTTP: dict[type[CategoryException], type[HTTPException]] = {

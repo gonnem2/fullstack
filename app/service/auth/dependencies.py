@@ -4,8 +4,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import oauth2_scheme
 from app.core.settings import settings
+from app.db import User
 from app.db.database import get_db
-from app.service.auth.exceptions import CredentialsException, TokenExpiredException
+from app.db.models.user import UserRoles
+from app.service.auth.exceptions import (
+    CredentialsException,
+    TokenExpiredException,
+    NotAdminUserException,
+)
 from app.service.auth import crud as auth_crud
 
 
@@ -15,7 +21,6 @@ async def get_current_user(
     """
     Проверяет JWT и возвращает пользователя из базы.
     """
-
     try:
         payload = jwt.decode(
             token,
@@ -35,3 +40,15 @@ async def get_current_user(
     if user is None:
         raise CredentialsException("Ошибка при распознавании токена")
     return user
+
+
+async def get_admin_user(current_user: User = Depends(get_current_user)):
+    if current_user.role == UserRoles.ADMIN:
+        return current_user
+    raise NotAdminUserException("User is not admin")
+
+
+async def get_user(current_user: User = Depends(get_current_user)):
+    if current_user.role == UserRoles.USER:
+        return current_user
+    raise NotAdminUserException("User's role is not 'user'")
