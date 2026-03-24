@@ -31,3 +31,4 @@ app.log
 # macOS
 .DS_Store
 alembic.ini
+*node_modules
