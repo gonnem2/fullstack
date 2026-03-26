@@ -1,13 +1,15 @@
 from python:3.13-slim
 
-
 WORKDIR /src
+RUN pip install uv
 
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY ./app ./app
+COPY pyproject.toml uv.lock ./
+
+
+RUN uv sync --frozen
+
 
 COPY alembic.ini /src/
 

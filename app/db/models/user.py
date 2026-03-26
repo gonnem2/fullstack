@@ -35,3 +35,7 @@ class User(Base):
     categories: Mapped[List["Category"]] = relationship(
         "Category", back_populates="user", uselist=True, cascade="all, delete-orphan"
     )
+
+    transactions = relationship(
+        "Transaction", back_populates="user", cascade="all, delete"
+    )

@@ -4,6 +4,7 @@ from .auth import router as auth_router
 from .stats import router as stats_router
 from .income import router as income_router
 from .categories import router as categories_router
+from .files import router as files_router
 
 __all__ = [
     "user_router",
@@ -12,4 +13,5 @@ __all__ = [
     "stats_router",
     "income_router",
     "categories_router",
+    "files_router",
 ]
