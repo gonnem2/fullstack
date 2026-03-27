@@ -11,25 +11,34 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import relationship
-import enum
 
 from app.db.models.base import Base
 
 
 class AttachedFile(Base):
+    """Метаданные файлов, хранящихся в S3/MinIO."""
+
     __tablename__ = "attached_files"
 
     id = Column(Integer, primary_key=True, index=True)
     transaction_id = Column(
-        Integer, ForeignKey("transactions.id", ondelete="CASCADE"), nullable=False
+        Integer,
+        ForeignKey("transactions.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     user_id = Column(
-        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     original_name = Column(String, nullable=False)
-    s3_key = Column(String, nullable=False, unique=True)
+    s3_key = Column(String, nullable=False, unique=True)  # путь внутри бакета
     content_type = Column(String, nullable=False)
     size_bytes = Column(Integer, nullable=False)
     uploaded_at = Column(DateTime, server_default=func.now())
+
+    user = relationship("User", back_populates="files")  # ← добавлено
 
     transaction = relationship("Transaction", back_populates="files")

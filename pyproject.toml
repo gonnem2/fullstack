@@ -13,9 +13,9 @@ dependencies = [
     "pydantic[email]>=2.12.5",
     "pydantic-settings>=2.13.1",
     "uvicorn>=0.42.0",
-    "jwt>=1.4.0",
     "passlib>=1.7.4",
     "aiomcache>=0.8.2",
     "python-multipart>=0.0.22",
     "black>=26.3.1",
+    "pyjwt>=2.12.1",
 ]
