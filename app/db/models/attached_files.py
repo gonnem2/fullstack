@@ -40,5 +40,3 @@ class AttachedFile(Base):
     uploaded_at = Column(DateTime, server_default=func.now())
 
     user = relationship("User", back_populates="files")  # ← добавлено
-
-    transaction = relationship("Transaction", back_populates="files")

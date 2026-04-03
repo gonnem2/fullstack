@@ -1,5 +1,3 @@
-# работа с файлами через MinIO (S3-совместимое хранилище)
-
 import uuid
 import boto3
 from botocore.exceptions import ClientError

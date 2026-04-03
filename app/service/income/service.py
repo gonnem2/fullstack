@@ -3,6 +3,7 @@ from typing import Tuple, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.s3.service import delete_file
 from app.db import User
 from app.db.models.category import TypesOfCat
 from app.schemas.dataclasses.income import IncomeDTO
@@ -22,8 +23,13 @@ from app.service.income.exceptions import (
 
 class IncomeService:
     """Сревис доходов: создание, удаление, изменение, ..."""
+
     async def create_income(
-        self, db: AsyncSession, current_user: User, income: IncomeCreate
+        self,
+        db: AsyncSession,
+        current_user: User,
+        income: IncomeCreate,
+        image_key: str,
     ):
         """Создает новую трату в БД"""
 
@@ -36,7 +42,10 @@ class IncomeService:
             raise CategoryTypeException("Тип категории не трата!") from None
 
         new_income: IncomeDTO = await income_crud.create_category(
-            db, current_user.id, income
+            db,
+            current_user.id,
+            income,
+            image_key,
         )
         return new_income
 
@@ -48,16 +57,31 @@ class IncomeService:
         skip: int,
         limit: int,
         current_user: User,
-    ) -> Tuple[list[IncomeDTO], int]:
-        """Возвращает все доходы юзера за период и их сумму"""
-
+        category_id: int | None = None,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        search: str | None = None,
+        sort_by: str = "income_date",
+        sort_order: str = "desc",
+    ):
         if from_date > to_date:
-            raise IncomePeriodException("Период трат неправильный!")
+            raise IncomePeriodException("Период неправильный")
 
-        incomes: List[IncomeDTO] = await income_crud.get_incomes_by_period(
-            db, from_date, to_date, skip, limit, current_user.id
+        incomes, total = await income_crud.get_incomes_by_period(
+            db=db,
+            user_id=current_user.id,
+            from_date=from_date,
+            to_date=to_date,
+            skip=skip,
+            limit=limit,
+            category_id=category_id,
+            min_value=min_value,
+            max_value=max_value,
+            search=search,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
-        total = sum(map(lambda x: x.value, incomes))
+
         return incomes, total
 
     async def get_income_by_id(
@@ -109,5 +133,8 @@ class IncomeService:
 
         if income.user_id != current_user.id:
             raise IncomeUserPermissionException("Доход не принадлежит пользователю")
+
+        if income.image_key:
+            delete_file(income.image_key)
 
         await income_crud.delete_income(db, income_id)

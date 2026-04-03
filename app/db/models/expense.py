@@ -20,5 +20,7 @@ class Expense(Base):
     value: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
     comment: Mapped[str] = mapped_column(String(100), nullable=True)
 
+    image_key: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
     category: Mapped["Category"] = relationship("Category", back_populates="expenses")
     user: Mapped["User"] = relationship("User", back_populates="expenses")

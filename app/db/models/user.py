@@ -36,9 +36,6 @@ class User(Base):
         "Category", back_populates="user", uselist=True, cascade="all, delete-orphan"
     )
 
-    transactions: Mapped[List["Transaction"]] = relationship(
-        "Transaction", back_populates="user"
-    )
     files = relationship(
         "AttachedFile", back_populates="user", cascade="all, delete-orphan"
     )

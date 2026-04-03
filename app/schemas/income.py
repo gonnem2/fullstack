@@ -25,6 +25,7 @@ class Income(BaseModel):
     user_id: int
     income_date: datetime
     category_id: int
+    image_key: str
     value: float = Field(..., ge=0, lt=1000000000)
     comment: Optional[str]
 

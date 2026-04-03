@@ -8,5 +8,6 @@ class IncomeDTO:
     user_id: int
     income_date: datetime
     category_id: int
+    image_key: str
     value: float
     comment: str

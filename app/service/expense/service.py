@@ -3,12 +3,11 @@ from typing import Tuple
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import Expense, Category
+from app.core.s3.service import delete_file
 from app.db.models.category import TypesOfCat
-from app.schemas import expense
 from app.schemas.dataclasses.category import CategoryDTO
 from app.schemas.dataclasses.expense import ExpenseDTO
-from app.schemas.expense import ExpenseCreate, ExpenseOut, ExpenseUpdate
+from app.schemas.expense import ExpenseCreate, ExpenseUpdate
 from app.service.category.crud import get_category_by_id
 from app.service.category.exception import (
     CategoryNotFoundException,
@@ -36,6 +35,7 @@ class ExpenseService:
         db: AsyncSession,
         spending: ExpenseCreate,
         user_id: int,
+        image_key: str | None = None,
     ) -> ExpenseDTO:
         """Создание траты в БД"""
 
@@ -44,13 +44,16 @@ class ExpenseService:
         if not category.type_of_category == TypesOfCat.EXPENSE:
             raise CategoryTypeException("Тип категории не трата")
 
-        new_expense = await expense_crud.create_expense(db, spending, user_id)
+        new_expense = await expense_crud.create_expense(
+            db, spending, user_id, image_key
+        )
         return ExpenseDTO(
             id=new_expense.id,
             expense_date=new_expense.expense_date,
             user_id=new_expense.user_id,
             category_id=new_expense.category_id,
             value=new_expense.value,
+            image_key=image_key,
             comment=new_expense.comment,
         )
 
@@ -62,27 +65,30 @@ class ExpenseService:
         limit: int,
         from_date: datetime,
         to_date: datetime,
+        category_id: int | None = None,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        search: str | None = None,
+        sort_by: str = "expense_date",
+        sort_order: str = "desc",
     ) -> Tuple[list[ExpenseDTO], float]:
-        """Возвращает все траты юзера с пагинацией"""
 
-        expenses: list[ExpenseDTO] = [
-            ExpenseDTO(
-                id=new_expense.id,
-                expense_date=new_expense.expense_date,
-                user_id=new_expense.user_id,
-                category_id=new_expense.category_id,
-                value=new_expense.value,
-                comment=new_expense.comment,
-            )
-            for new_expense in await expense_crud.get_user_expenses(
-                db, user_id, skip, limit, from_date, to_date
-            )
-        ]
-
-        total_expenses = await expense_crud.get_total_expenses(
-            db, user_id, from_date, to_date
+        expenses, total = await expense_crud.get_user_expenses(
+            db=db,
+            user_id=user_id,
+            skip=skip,
+            limit=limit,
+            from_date=from_date,
+            to_date=to_date,
+            category_id=category_id,
+            min_value=min_value,
+            max_value=max_value,
+            search=search,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
-        return expenses, total_expenses
+
+        return expenses, total
 
     async def get_expense_by_id(
         self, db: AsyncSession, spending_id: int, user_id: int
@@ -104,6 +110,7 @@ class ExpenseService:
             user_id=expense.user_id,
             category_id=expense.category_id,
             value=expense.value,
+            image_key=expense.image_key,
             comment=expense.comment,
         )
 
@@ -139,6 +146,7 @@ class ExpenseService:
             user_id=expense.user_id,
             category_id=expense.category_id,
             value=expense.value,
+            image_key=expense.image_key,
             comment=expense.comment,
         )
 
@@ -157,11 +165,15 @@ class ExpenseService:
 
         await expense_crud.delete_expense(db, expense)
 
+        if expense.image_key:
+            delete_file(expense.image_key)
+
         return ExpenseDTO(
             id=expense.id,
             expense_date=expense.expense_date,
             user_id=expense.user_id,
             category_id=expense.category_id,
             value=expense.value,
+            image_key=expense.image_key,
             comment=expense.comment,
         )

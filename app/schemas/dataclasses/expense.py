@@ -10,3 +10,4 @@ class ExpenseDTO:
     category_id: int
     value: float
     comment: str
+    image_key: str | None = None

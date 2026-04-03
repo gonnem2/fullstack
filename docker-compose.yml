@@ -69,6 +69,8 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+    volumes:
+      - ./app:/app/src
     command: ["sh", "-c", "uv run alembic upgrade head && uv run python3 -m app.main"]
 
 

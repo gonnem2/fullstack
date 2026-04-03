@@ -11,7 +11,6 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision: str = "7b19fd1ed4a4"
 down_revision: Union[str, Sequence[str], None] = "141fbce9ba28"
@@ -36,6 +35,10 @@ def upgrade() -> None:
     )
     # ### end Alembic commands ###
 
+    op.add_column("expenses", sa.Column("image_key", sa.String(255), nullable=True))
+    # Добавляем колонку в таблицу income
+    op.add_column("incomes", sa.Column("image_key", sa.String(255), nullable=True))
+
 
 def downgrade() -> None:
     """Downgrade schema."""
@@ -45,3 +48,6 @@ def downgrade() -> None:
     )
     op.drop_column("users", "day_expense_limit")
     # ### end Alembic commands ###
+
+    op.drop_column("expenses", "image_key")
+    op.drop_column("incomes", "image_key")
