@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /install /usr/local
 
 # Копируем исходный код
-COPY lab6/backend .
+COPY lab6 .
 
 # Непривилегированный пользователь
 RUN useradd -m -u 1001 appuser && chown -R appuser:appuser /app
