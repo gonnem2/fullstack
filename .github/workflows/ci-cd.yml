@@ -61,6 +61,9 @@ jobs:
       - name: Install uv
         run: pip install uv
 
+      - name: Setup venv
+        run: uv venv
+
       - name: Install deps
         run: uv pip install -r requirements.txt
 
