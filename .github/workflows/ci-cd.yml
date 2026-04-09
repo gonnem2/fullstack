@@ -64,8 +64,11 @@ jobs:
       - name: Setup venv
         run: uv venv
 
-      - name: Install deps
-        run: uv pip install -r requirements.txt
+      - name: Install deps (uv + pyproject)
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install .[dev]
 
       - name: Run pytest
         env:
