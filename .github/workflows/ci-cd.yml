@@ -72,13 +72,16 @@ jobs:
 
       - name: Run pytest
         env:
-          DATABASE_URL:   postgresql+asyncpg://testuser:testpassword@localhost:5432/financetrack_test
+          DB_URL: postgresql+asyncpg://testuser:testpassword@localhost:5432/financetrack_test
           MEMCACHED_HOST: localhost
           MEMCACHED_PORT: "11211"
-          SECRET_KEY:     ci_test_secret_key_not_for_production
+          SECRET_KEY: ci_test_secret_key_not_for_production
           S3_ENDPOINT_URL: ""
-          ENVIRONMENT:    test
-        run: uv run pytest tests/ -v --tb=short --junitxml=test-results.xml
+          ENVIRONMENT: test
+          ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+          REFRESH_TOKEN_EXPIRE_MINUTES: "1440"
+          ALGORITHM: "HS256"
+        run: uv run pytest tests/ -v --tb=short --junitxml=test-results.xmll
 
 
       - name: Upload test results
