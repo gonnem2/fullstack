@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.vite/
+
+# Тесты
+coverage/
+src/__tests__/
+
+# IDE
+.idea/
+.vscode/
+
+# Секреты
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+
+*.md
+*.log

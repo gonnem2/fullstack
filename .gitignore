@@ -1,0 +1,26 @@
+# Секреты — НИКОГДА не коммитим
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+coverage/
+
+# Docker
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
