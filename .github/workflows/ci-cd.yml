@@ -76,7 +76,7 @@ jobs:
           MEMCACHED_HOST: localhost
           MEMCACHED_PORT: "11211"
           SECRET_KEY: ci_test_secret_key_not_for_production
-          S3_ENDPOINT_URL: ""
+          S3_ENDPOINT_URL: "http://localhost:9000"
           ENVIRONMENT: test
           ACCESS_TOKEN_EXPIRE_MINUTES: "30"
           REFRESH_TOKEN_EXPIRE_MINUTES: "1440"
