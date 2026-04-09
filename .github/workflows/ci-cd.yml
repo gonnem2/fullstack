@@ -78,8 +78,8 @@ jobs:
           SECRET_KEY:     ci_test_secret_key_not_for_production
           S3_ENDPOINT_URL: ""
           ENVIRONMENT:    test
-        run: |
-          pytest tests/ -v --tb=short --junitxml=test-results.xml
+        run: uv run pytest tests/ -v --tb=short --junitxml=test-results.xml
+
 
       - name: Upload test results
         if: always()
