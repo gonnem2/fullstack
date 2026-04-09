@@ -1,35 +1,28 @@
-# ── Stage 1: зависимости ──────────────────────────────────────────────────────
-FROM python:3.11-slim AS builder
+# ── Базовый образ ────────────────────────────────────────────────────────────
+FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    libcairo2-dev \
-    libkrb5-dev \              # <--- добавьте эту строку
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir --prefix=/install -r requirements.txt
-
-# ── Stage 2: runtime ──────────────────────────────────────────────────────────
-FROM python:3.11-slim AS runtime
-
-WORKDIR /app
-
+# Устанавливаем системные зависимости (необходимы для работы приложения)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     libcairo2 \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /install /usr/local
+# Устанавливаем uv (менеджер пакетов)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# Копируем файл с зависимостями и исходный код
+COPY pyproject.toml ./
 COPY . .
 
+# Устанавливаем все зависимости и сам проект (аналог pip install -e .)
+RUN uv pip install --system .
+
+# Переключаемся на непривилегированного пользователя
 RUN useradd -m -u 1001 appuser && chown -R appuser:appuser /app
-USER appuser
+USER 1001
 
 EXPOSE 8000
 
