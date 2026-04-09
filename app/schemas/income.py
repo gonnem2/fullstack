@@ -9,15 +9,14 @@ class IncomeCreate(BaseModel):
     income_date: datetime
     category_id: int
     value: float
-    comment: str
+    comment: str | None = None
 
 
 class IncomeUpdate(BaseModel):
     income_date: datetime
     category_id: int
     value: float = Field(..., ge=0, lt=1000000000)
-    comment: str
-    comment: str
+    comment: str | None = None
 
 
 class Income(BaseModel):
@@ -28,6 +27,8 @@ class Income(BaseModel):
     image_key: str
     value: float = Field(..., ge=0, lt=1000000000)
     comment: Optional[str]
+    image_key: Optional[str] = None   # добавить эту строку
+
 
 
 class IncomeGetPag(BaseModel):

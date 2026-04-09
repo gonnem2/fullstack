@@ -8,6 +8,8 @@ from .routers import (
     expense_router,
     categories_router,
     files_router,
+    seo_router,
+    currency_router,
 )
 
 router = APIRouter(prefix="/api/v1")
@@ -19,3 +21,5 @@ router.include_router(user_router)
 router.include_router(files_router)
 router.include_router(expense_router)
 router.include_router(categories_router)
+router.include_router(seo_router)
+router.include_router(currency_router)

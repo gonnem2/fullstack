@@ -1,0 +1,32 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import CurrencyWidget from '../../components/CurrencyWidget';
+
+describe('CurrencyWidget', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it('показывает курсы после успешного ответа', async () => {
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ usd: 90.5, eur: 98.2, cny: 12.4, updated_at: '2025-06-01T12:00:00' }),
+      })
+    );
+    render(<CurrencyWidget />);
+    await waitFor(() => {
+      expect(screen.getByText(/90\.50/)).toBeInTheDocument();
+      expect(screen.getByText(/98\.20/)).toBeInTheDocument();
+      expect(screen.getByText(/12\.40/)).toBeInTheDocument();
+    });
+  });
+
+  it('ничего не рендерит при ошибке сети', async () => {
+    global.fetch = vi.fn(() => Promise.reject(new Error('Network error')));
+    const { container } = render(<CurrencyWidget />);
+    await waitFor(() => {
+      expect(container.firstChild).toBeNull();
+    });
+  });
+});

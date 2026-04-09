@@ -6,7 +6,7 @@ from app.core.exceptions.base_http import Base
 class ExpenseNotFoundHTTPException(Base):
     """Трата не найдена"""
 
-    status_code = (status.HTTP_404_NOT_FOUND,)
+    status_code = status.HTTP_404_NOT_FOUND
     detail = "Expense not found"
 
 

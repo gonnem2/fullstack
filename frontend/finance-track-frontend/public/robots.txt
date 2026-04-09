@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /login
+Allow: /register
+Disallow: /dashboard
+Disallow: /stats
+Disallow: /transactions
+Disallow: /spending
+Disallow: /income
+Disallow: /admin/
+
+Sitemap: https://financetrack.example.com/sitemap.xml

@@ -5,6 +5,8 @@ from .stats import router as stats_router
 from .income import router as income_router
 from .categories import router as categories_router
 from .files import router as files_router
+from .seo import router as seo_router
+from .currency import router as currency_router
 
 __all__ = [
     "user_router",
@@ -14,4 +16,6 @@ __all__ = [
     "income_router",
     "categories_router",
     "files_router",
+    "seo_router",
+    "currency_router",
 ]

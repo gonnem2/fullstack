@@ -21,12 +21,6 @@ class AttachedFile(Base):
     __tablename__ = "attached_files"
 
     id = Column(Integer, primary_key=True, index=True)
-    transaction_id = Column(
-        Integer,
-        ForeignKey("transactions.id", ondelete="CASCADE"),
-        nullable=False,
-        index=True,
-    )
     user_id = Column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),

@@ -8,13 +8,13 @@ class ExpenseCreate(BaseModel):
     expense_date: datetime
     category_id: int
     cost: float
-    comment: str
+    comment: str | None = None
 
 class ExpenseUpdate(BaseModel):
-    expense_date: datetime
-    category_id: int
-    cost: float
-    comment: str
+    expense_date: datetime | None = datetime.now()   # было datetime (обязательное)
+    category_id: int | None = None         # было int
+    cost: float | None = None              # было float
+    comment: str | None = None
 
 
 class ExpenseOut(BaseModel):
@@ -24,6 +24,8 @@ class ExpenseOut(BaseModel):
     category_id: int
     value: float
     comment: Optional[str]
+    image_key: Optional[str] = None   # добавить эту строку
+
 
     model_config = ConfigDict(from_attributes=True)
 

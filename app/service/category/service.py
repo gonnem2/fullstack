@@ -43,7 +43,7 @@ class CategoryService:
         if not category:
             raise CategoryNotFoundException("Категория не найдена")
 
-        if category.id != current_user.id:
+        if category.user_id != current_user.id:
             raise CategoryPermissionException("Категория не принадлежит пользователю")
 
         return category
