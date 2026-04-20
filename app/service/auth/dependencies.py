@@ -49,6 +49,6 @@ async def get_admin_user(current_user: User = Depends(get_current_user)):
 
 
 async def get_user(current_user: User = Depends(get_current_user)):
-    if current_user.role == UserRoles.USER:
+    if current_user.role in (UserRoles.USER, UserRoles.ADMIN):
         return current_user
     raise NotAdminUserException("User's role is not 'user'")

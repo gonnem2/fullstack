@@ -13,9 +13,7 @@ class UserService:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def change_user_expense_limit(
-        self, db: AsyncSession, user: User, new_limit: float
-    ) -> UserDTO:
+    async def change_user_expense_limit(self, user: User, new_limit: float) -> UserDTO:
         """Изменяет дневной лимит трат"""
 
         changed_user = await user_repo.change_expense_limit(db, user, new_limit)
