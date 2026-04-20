@@ -33,6 +33,7 @@ include = ["app*"]
 [tool.ruff.lint]
 ignore = [
     "F821",   # undefined name
+    "F811",   # undefined name
     "F403",   # star import
     "F841",   # unused variable
 ]
