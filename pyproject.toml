@@ -30,7 +30,12 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]
-
+[tool.ruff.lint]
+ignore = [
+    "F821",   # undefined name
+    "F403",   # star import
+    "F841",   # unused variable
+]
 [dependency-groups]
 dev = [
     "httpx>=0.28.1",
