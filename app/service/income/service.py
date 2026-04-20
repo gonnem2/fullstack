@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Tuple, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 

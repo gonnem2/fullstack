@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch
 
 pytestmark = pytest.mark.integration
 
@@ -7,7 +7,6 @@ pytestmark = pytest.mark.integration
 class TestCurrency:
     async def test_currency_rates_ok(self, client):
         # мокаем сервис напрямую
-        from app.service.currency.service import get_currency_rates
 
         mock_rates = {
             "usd": 0.012,
@@ -25,7 +24,6 @@ class TestCurrency:
 
     async def test_currency_rates_fallback_cache(self, client):
         # первый запрос успешен
-        from app.service.currency.service import get_currency_rates
 
         mock_rates = {
             "usd": 0.012,

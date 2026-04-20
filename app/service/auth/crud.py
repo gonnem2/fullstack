@@ -1,9 +1,8 @@
-from sqlalchemy import select, or_, update
+from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import encode_password
 from app.db import User
-from app.schemas.dataclasses.user import UserDTO
 from app.schemas.user import UserCreate
 
 

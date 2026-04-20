@@ -1,8 +1,8 @@
 import asyncio
 from datetime import datetime
-from typing import List, Iterable, Optional, Tuple
+from typing import List, Optional, Tuple
 
-from sqlalchemy import insert, select, between, update, delete, desc, asc, func
+from sqlalchemy import insert, select, update, delete, desc, asc, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Income

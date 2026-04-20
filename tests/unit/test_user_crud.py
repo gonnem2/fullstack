@@ -1,7 +1,6 @@
 import pytest
-from unittest.mock import AsyncMock, patch
 from app.service.user.crud import change_user_role, get_all_users
-from app.db.models.user import User, UserRoles
+from app.db.models.user import UserRoles
 
 pytestmark = pytest.mark.unit
 

@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import AsyncMock, patch
 from fastapi.security import OAuth2PasswordRequestForm
 from app.service.auth.service import AuthService
-from app.service.auth.exceptions import UserAlreadyExists, UserNotFound, AuthException
+from app.service.auth.exceptions import UserAlreadyExists, UserNotFound
 from app.schemas.user import UserCreate
 from app.db.models.user import User
 

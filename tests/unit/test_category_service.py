@@ -5,7 +5,7 @@ from app.service.category.exception import (
     CategoryNotFoundException,
     CategoryPermissionException,
 )
-from app.schemas.category import CreateCategory, CategoryUpdate
+from app.schemas.category import CreateCategory
 from app.schemas.dataclasses.category import CategoryDTO
 from app.db.models.user import User
 

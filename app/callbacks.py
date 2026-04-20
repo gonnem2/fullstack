@@ -1,6 +1,6 @@
 import asyncio
 from contextlib import asynccontextmanager
-from inspect import iscoroutine, iscoroutinefunction
+from inspect import iscoroutinefunction
 
 from fastapi import FastAPI
 

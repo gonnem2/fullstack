@@ -15,10 +15,9 @@ from fastapi import (
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.s3.service import upload_file, generate_download_url
-from app.db import User, Expense
+from app.db import User
 from app.db.database import get_db
 from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseOut, ExpenseGet
-from app.core.pagination import paginate
 from app.service.auth.dependencies import get_current_user
 from app.service.expense.service import ExpenseService
 

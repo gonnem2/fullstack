@@ -3,7 +3,6 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 from app.db.models.user import UserRoles
-from app.schemas import dataclasses
 
 
 class UserCreate(BaseModel):

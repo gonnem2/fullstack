@@ -1,7 +1,6 @@
 from typing import List
 
 from sqlalchemy import select, insert, update, delete
-from sqlalchemy.engine import row
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import Category

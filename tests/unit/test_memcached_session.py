@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import AsyncMock, patch
 from app.core.memcached.session import memcached_session
 
 

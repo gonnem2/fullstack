@@ -1,6 +1,6 @@
 import calendar
 
-from app.db import User, Category, Expense
+from app.db import Category, Expense
 from app.db.models.category import TypesOfCat
 from app.schemas.dataclasses.stats import CategoryExpenseDTO, ExpenseDynamicDTO
 

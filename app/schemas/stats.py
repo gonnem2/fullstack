@@ -3,7 +3,7 @@ from typing import List
 from pydantic import BaseModel
 from enum import Enum
 
-from app.schemas.dataclasses.stats import CategoryExpenseStatDTO, CategoryExpenseDTO
+from app.schemas.dataclasses.stats import CategoryExpenseDTO
 
 
 class PeriodEnum(str, Enum):

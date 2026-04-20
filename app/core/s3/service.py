@@ -1,7 +1,7 @@
 import uuid
 import boto3
 from botocore.exceptions import ClientError
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 from app.core.settings import settings
 
@@ -44,7 +44,7 @@ async def upload_file(file, user_id: int) -> str:
             Body=content,
             ContentType=file.content_type,
         )
-    except ClientError as e:
+    except ClientError:
         raise HTTPException(502, "S3 error")
 
     return key

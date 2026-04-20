@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime
-from typing import List, Dict, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from sqlalchemy import select, update, func, desc, asc
 from sqlalchemy.ext.asyncio import AsyncSession

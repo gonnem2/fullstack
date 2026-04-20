@@ -1,9 +1,8 @@
 import uuid
 from datetime import datetime, timedelta
-from typing import Tuple, Annotated
+from typing import Tuple
 
 import jwt
-from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +10,6 @@ from app.core.memcached.session import memcached_session
 from app.core.settings import settings
 from app.core.security import validate_password
 from app.db import User
-from app.schemas.dataclasses.user import UserDTO
 from app.schemas.user import UserCreate
 from app.service.auth import crud as auth_crud
 from app.service.auth.exceptions import (
